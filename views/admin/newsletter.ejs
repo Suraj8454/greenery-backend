@@ -1,0 +1,247 @@
+<!-- <div class="flex flex-wrap items-center justify-between gap-3 mb-6"><div><p class="text-xs font-bold uppercase tracking-[.18em] text-emerald-700">Audience management</p><h1 class="mt-2 text-3xl font-extrabold brand-heading text-slate-900">Newsletter subscribers</h1><p class="mt-2 text-sm text-slate-500">Emails submitted through the storefront footer.</p></div></div><form method="POST" action="/admin/newsletter" class="flex gap-2 p-4 mb-5 bg-white rounded-2xl ring-1 ring-slate-200"><input type="email" required name="email" placeholder="Add subscriber email" class="flex-1 min-w-0 px-3 py-2 text-sm border rounded-xl border-slate-200"><button class="px-4 py-2 text-sm font-bold text-white rounded-xl bg-emerald-900">Add subscriber</button></form><div class="overflow-hidden bg-white shadow-sm rounded-2xl ring-1 ring-slate-200/70"><div class="overflow-x-auto"><table class="w-full text-sm text-left"><thead class="text-xs tracking-wider uppercase bg-slate-50 text-slate-500"><tr><th class="px-5 py-4">Email</th><th class="px-5 py-4">Subscribed</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Action</th></tr></thead><tbody class="divide-y divide-slate-100"><% if (!subscribers.length) { %><tr><td colspan="4" class="px-5 py-12 text-center text-slate-500">No subscribers yet.</td></tr><% } %><% subscribers.forEach(s => { %><tr><td class="px-5 py-4 font-semibold text-slate-800"><%= s.email %></td><td class="px-5 py-4 text-slate-500"><%= new Date(s.created_at).toLocaleString() %></td><td class="px-5 py-4"><%= s.is_active ? 'Active' : 'Inactive' %></td><td class="px-5 py-4"><div class="flex gap-2"><form method="POST" action="/admin/newsletter/<%= s.id %>/toggle"><button class="px-3 py-2 text-xs font-bold rounded-lg bg-amber-50 text-amber-800"><%= s.is_active ? 'Disable' : 'Enable' %></button></form><form method="POST" action="/admin/newsletter/<%= s.id %>/delete" onsubmit="return confirm('Delete this subscriber?')"><button class="px-3 py-2 text-xs font-bold border rounded-lg border-rose-200 text-rose-700 hover:bg-rose-50">Delete</button></form></div></td></tr><% }) %></tbody></table></div></div> -->
+
+
+
+<%
+  const activeCount = subscribers.filter(s => s.is_active).length;
+  const inactiveCount = subscribers.length - activeCount;
+%>
+
+<!-- Page Header -->
+<section class="mb-8">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        Audience management
+      </div>
+
+      <h1 class="text-3xl font-extrabold tracking-tight brand-heading text-slate-900">
+        Newsletter subscribers
+      </h1>
+
+      <p class="mt-2 text-sm text-slate-500">
+        Manage your email audience and grow your customer community.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3 px-4 py-3 bg-white border shadow-sm rounded-xl border-slate-200">
+      <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-slate-500">Total subscribers</p>
+        <p class="text-xl font-extrabold text-slate-900"><%= subscribers.length %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statistics -->
+<div class="grid grid-cols-1 gap-4 mb-7 sm:grid-cols-3">
+
+  <div class="p-5 transition bg-white border shadow-sm rounded-2xl border-slate-200 hover:-translate-y-1 hover:shadow-md">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-semibold text-slate-500">All subscribers</p>
+        <h3 class="mt-2 text-3xl font-extrabold text-slate-900"><%= subscribers.length %></h3>
+        <p class="mt-1 text-xs text-slate-400">Total email records</p>
+      </div>
+      <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-slate-100 text-slate-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2m16-13a4 4 0 010 8m4 5v-2a4 4 0 00-3-3.87M9 11a4 4 0 100-8 4 4 0 000 8z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-5 transition bg-white border shadow-sm rounded-2xl border-emerald-100 hover:-translate-y-1 hover:shadow-md">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-semibold text-slate-500">Active subscribers</p>
+        <h3 class="mt-2 text-3xl font-extrabold text-emerald-700"><%= activeCount %></h3>
+        <p class="mt-1 text-xs text-slate-400">Currently subscribed</p>
+      </div>
+      <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 12l4 4L19 6"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-5 transition bg-white border shadow-sm rounded-2xl border-amber-100 hover:-translate-y-1 hover:shadow-md">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-semibold text-slate-500">Inactive subscribers</p>
+        <h3 class="mt-2 text-3xl font-extrabold text-amber-600"><%= inactiveCount %></h3>
+        <p class="mt-1 text-xs text-slate-400">Disabled email records</p>
+      </div>
+      <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-50 text-amber-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M12 9v4m0 4h.01M10.3 3.9L1.8 18.2A2 2 0 003.5 21h17a2 2 0 001.7-2.8L13.7 3.9a2 2 0 00-3.4 0z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add Subscriber -->
+<div class="overflow-hidden bg-white border shadow-sm mb-7 rounded-2xl border-emerald-100">
+  <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-100">
+    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 5v14m-7-7h14"/>
+      </svg>
+    </div>
+    <div>
+      <h2 class="font-extrabold text-slate-900">Add new subscriber</h2>
+      <p class="mt-0.5 text-xs text-slate-500">Manually add an email to your newsletter audience.</p>
+    </div>
+  </div>
+
+  <form method="POST" action="/admin/newsletter" class="flex flex-col gap-3 p-5 sm:flex-row">
+    <div class="relative flex-1">
+      <!-- <svg class="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+          d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+      </svg> -->
+
+      <input
+        type="email"
+        required
+        name="email"
+        placeholder="Enter subscriber email address"
+        class="w-full py-3 pr-4 text-sm transition border outline-none rounded-xl border-slate-200 bg-slate-50 pl-11 placeholder:text-slate-400 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-50"
+      >
+    </div>
+
+    <button class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#174a34] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-800 active:scale-[0.98]">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 5v14m-7-7h14"/>
+      </svg>
+      Add subscriber
+    </button>
+  </form>
+</div>
+
+<!-- Subscribers Table -->
+<div class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200">
+
+  <div class="flex flex-col gap-3 px-5 py-5 border-b border-slate-100 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-lg font-extrabold text-slate-900">All subscribers</h2>
+      <p class="mt-1 text-xs text-slate-500">View and manage your newsletter email list.</p>
+    </div>
+
+    <span class="px-3 py-2 text-xs font-bold rounded-lg w-fit bg-slate-100 text-slate-600">
+      <%= subscribers.length %> Records
+    </span>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[750px] text-left text-sm">
+      <thead class="bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+        <tr>
+          <th class="px-5 py-4">Subscriber</th>
+          <th class="px-5 py-4">Subscribed date</th>
+          <th class="px-5 py-4">Status</th>
+          <th class="px-5 py-4 text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-slate-100">
+
+        <% if (!subscribers.length) { %>
+          <tr>
+            <td colspan="4" class="px-5 py-16 text-center">
+              <div class="flex items-center justify-center mx-auto h-14 w-14 rounded-2xl bg-slate-100 text-slate-400">
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                    d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+                </svg>
+              </div>
+              <h3 class="mt-4 font-bold text-slate-800">No subscribers yet</h3>
+              <p class="mt-1 text-sm text-slate-500">Your newsletter subscribers will appear here.</p>
+            </td>
+          </tr>
+        <% } %>
+
+        <% subscribers.forEach(s => { %>
+          <tr class="transition-colors group hover:bg-slate-50/80">
+
+            <!-- Email -->
+            <td class="px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-10 h-10 text-sm font-extrabold uppercase shrink-0 rounded-xl bg-emerald-50 text-emerald-800">
+                  <%= (s.email || 'S').charAt(0) %>
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800"><%= s.email %></p>
+                  <p class="mt-0.5 text-xs text-slate-400">Newsletter member</p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Date -->
+            <td class="px-5 py-4 whitespace-nowrap">
+              <p class="font-semibold text-slate-700">
+                <%= new Date(s.created_at).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) %>
+              </p>
+              <p class="mt-1 text-xs text-slate-400">
+                <%= new Date(s.created_at).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}) %>
+              </p>
+            </td>
+
+            <!-- Status -->
+            <td class="px-5 py-4">
+              <% if (s.is_active) { %>
+                <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                  Active
+                </span>
+              <% } else { %>
+                <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-500">
+                  <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                  Inactive
+                </span>
+              <% } %>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-5 py-4">
+              <div class="flex items-center justify-center gap-2">
+
+                <form method="POST" action="/admin/newsletter/<%= s.id %>/toggle">
+                  <button class="rounded-xl border px-3 py-2 text-xs font-bold transition
+                    <%= s.is_active
+                      ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                      : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100' %>">
+                    <%= s.is_active ? 'Disable' : 'Enable' %>
+                  </button>
+                </form>
+
+                <form method="POST" action="/admin/newsletter/<%= s.id %>/delete" onsubmit="return confirm('Are you sure you want to delete this subscriber?')">
+                  <button class="px-3 py-2 text-xs font-bold transition bg-white border rounded-xl border-rose-200 text-rose-600 hover:bg-rose-50">
+                    Delete
+                  </button>
+                </form>
+
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+
+      </tbody>
+    </table>
+  </div>
+</div>

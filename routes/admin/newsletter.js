@@ -1,0 +1,1 @@
+const r=require('express').Router(); const admin=require('../../middleware/adminMiddleware'); const c=require('../../controllers/storeController'); r.get('/',admin,c.newsletterSubscribers); r.post('/',admin,c.createSubscriber); r.post('/:id/toggle',admin,c.toggleSubscriber); r.post('/:id/delete',admin,c.deleteSubscriber); module.exports=r;

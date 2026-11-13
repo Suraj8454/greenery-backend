@@ -1,0 +1,1 @@
+const r=require('express').Router(); const admin=require('../../middleware/adminMiddleware'); const c=require('../../controllers/inventoryController'); r.get('/',admin,c.view); r.post('/:id/adjust',admin,c.adjust); module.exports=r;

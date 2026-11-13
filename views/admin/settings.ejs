@@ -1,0 +1,547 @@
+
+
+
+
+<section class="mb-7">
+  <p class="mb-2 text-xs font-bold uppercase tracking-[.18em] text-emerald-700">
+    Account Security
+  </p>
+
+  <h1 class="text-3xl font-extrabold tracking-tight brand-heading text-slate-900">
+    Settings
+  </h1>
+
+  <p class="mt-2 text-sm text-slate-500">
+    Manage your website configuration and administrator security.
+  </p>
+</section>
+
+<% if (typeof querySaved !== 'undefined' && querySaved) { %>
+  <div class="flex items-center gap-3 p-4 mb-5 text-sm font-semibold border rounded-xl border-emerald-200 bg-emerald-50 text-emerald-800">
+    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l4 4L19 6"/>
+    </svg>
+    Website settings saved successfully.
+  </div>
+<% } %>
+
+
+<!-- WEBSITE SETTINGS -->
+
+<section class="overflow-hidden bg-white shadow-sm mb-7 rounded-2xl ring-1 ring-slate-200/70">
+
+  <div class="p-6 border-b border-slate-100">
+    <div class="flex items-center gap-4">
+
+      <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.7 2.94-.08-.02a1.7 1.7 0 00-1.72.5l-.06.06h-3.4l-.06-.08a1.7 1.7 0 00-1.72-.5l-.08.02-1.7-2.94.06-.06A1.7 1.7 0 008.6 15l-.02-.08v-3.4l.08-.06a1.7 1.7 0 00.5-1.72l-.02-.08 2.94-1.7.06.06a1.7 1.7 0 001.88.34l.08-.02h3.4l.06.08a1.7 1.7 0 001.72.5l.08-.02 1.7 2.94-.06.06a1.7 1.7 0 00-.34 1.88z"/>
+        </svg>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-extrabold text-slate-900">
+          Website & Contact Settings
+        </h2>
+        <p class="mt-1 text-sm text-slate-500">
+          Manage your store branding, contact information and website content.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <form method="POST" action="/admin/settings/site" class="p-6">
+
+    <% const fields = [
+      ['brand_name','Brand name'],
+      ['announcement_text','Announcement bar text'],
+      ['hero_tagline','Hero tagline (fallback)'],
+      ['hero_title','Hero title (fallback)'],
+      ['hero_description','Hero description (fallback)'],
+      ['footer_heading','Footer heading'],
+      ['footer_description','Footer description'],
+      ['footer_cta_text','Footer CTA label'],
+      ['footer_image_url','Footer background image URL/path'],
+      ['brand_tagline','Brand tagline'],
+      ['search_placeholder','Search placeholder'],
+      ['footer_quick_title','Footer quick-links heading'],
+      ['footer_help_title','Footer help heading'],
+      ['footer_newsletter_title','Footer newsletter heading'],
+      ['navigation_json','Header navigation JSON'],
+      ['footer_quick_links_json','Footer quick links JSON'],
+      ['footer_help_links_json','Footer help links JSON'],
+      ['whatsapp_number','WhatsApp number (country code, digits only)'],
+      ['mobile_number','Display mobile number'],
+      ['contact_email','Contact email'],
+      ['address','Business address'],
+      ['instagram_url','Instagram URL'],
+      ['facebook_url','Facebook URL'],
+      ['twitter_url','Twitter / X URL'],
+      ['youtube_url','YouTube URL'],
+      ['pinterest_url','Pinterest URL'],
+      ['free_shipping_threshold','Free shipping threshold (₹)'],
+      ['shipping_fee','Shipping fee (₹)']
+    ]; %>
+
+
+    <div class="grid gap-5 sm:grid-cols-2">
+
+      <% fields.forEach(([key,label]) => { %>
+
+        <label class="block text-sm font-semibold text-slate-700">
+
+          <%= label %>
+
+          <% if (key === 'announcement_text') { %>
+
+            <textarea
+              name="<%= key %>"
+              rows="4"
+              placeholder="One announcement per line."
+              class="w-full px-4 py-3 mt-2 font-normal transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+            ><%= settings[key] || '' %></textarea>
+
+            <span class="block mt-1 text-xs font-normal text-slate-400">
+              Enter one announcement per line.
+            </span>
+
+          <% } else if (key.endsWith('_json')) { %>
+
+            <textarea
+              name="<%= key %>"
+              rows="4"
+              spellcheck="false"
+              class="w-full px-4 py-3 mt-2 font-mono text-xs font-normal transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+            ><%= settings[key] || '[]' %></textarea>
+
+          <% } else if (key === 'hero_description' || key === 'footer_description' || key === 'address') { %>
+
+            <textarea
+              name="<%= key %>"
+              rows="3"
+              class="w-full px-4 py-3 mt-2 font-normal transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+            ><%= settings[key] || '' %></textarea>
+
+          <% } else { %>
+
+            <input
+              type="text"
+              name="<%= key %>"
+              value="<%= settings[key] || '' %>"
+              placeholder="Enter <%= label.toLowerCase() %>"
+              class="w-full px-4 py-3 mt-2 font-normal transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+            />
+
+          <% } %>
+
+        </label>
+
+      <% }) %>
+
+    </div>
+
+
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t mt-7 border-slate-100">
+
+      <p class="text-xs text-slate-400">
+        Changes will be applied to your website after saving.
+      </p>
+
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#174a34] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-950/10 transition hover:bg-[#216744]"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+        Save Website Settings
+      </button>
+
+    </div>
+
+  </form>
+</section>
+
+
+<!-- QUICK MANAGEMENT -->
+
+<section class="mb-7">
+
+  <div class="mb-4">
+    <h2 class="text-lg font-extrabold text-slate-900">
+      Quick Management
+    </h2>
+
+    <p class="mt-1 text-sm text-slate-500">
+      Quickly access other website management modules.
+    </p>
+  </div>
+
+
+  <% const managementLinks = [
+    {
+      url:'/admin/slides',
+      title:'Homepage Slider',
+      description:'Manage homepage banners',
+      icon:'image'
+    },
+    {
+      url:'/admin/sections',
+      title:'Homepage Sections',
+      description:'Manage website sections',
+      icon:'layout'
+    },
+    {
+      url:'/admin/categories',
+      title:'Categories',
+      description:'Manage product categories',
+      icon:'folder'
+    },
+    {
+      url:'/admin/testimonials',
+      title:'Testimonials',
+      description:'Manage customer reviews',
+      icon:'star'
+    },
+    {
+      url:'/admin/promo-codes',
+      title:'Promo Codes',
+      description:'Manage discount coupons',
+      icon:'ticket'
+    },
+    {
+      url:'/admin/newsletter',
+      title:'Newsletter',
+      description:'View subscribers',
+      icon:'mail'
+    },
+    {
+      url:'/admin/contact-messages',
+      title:'Contact Messages',
+      description:'View customer enquiries',
+      icon:'message'
+    }
+  ]; %>
+
+
+  <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
+    <% managementLinks.forEach(link => { %>
+
+      <a
+        href="<%= link.url %>"
+        class="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+      >
+
+        <div class="flex items-center justify-center w-12 h-12 transition shrink-0 rounded-xl bg-emerald-50 text-emerald-700 group-hover:bg-emerald-100">
+
+          <% if (link.icon === 'image') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 15l-5-5L5 21"/>
+            </svg>
+
+          <% } else if (link.icon === 'layout') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9h18M9 21V9"/>
+            </svg>
+
+          <% } else if (link.icon === 'folder') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h5l2 2h7a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+            </svg>
+
+          <% } else if (link.icon === 'star') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/>
+            </svg>
+
+          <% } else if (link.icon === 'ticket') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8a2 2 0 002-2h14a2 2 0 002 2v2a2 2 0 000 4v2a2 2 0 00-2 2H5a2 2 0 00-2-2v-2a2 2 0 000-4V8z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 6v2m0 3v2m0 3v2"/>
+            </svg>
+
+          <% } else if (link.icon === 'mail') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7l9 6 9-6"/>
+            </svg>
+
+          <% } else if (link.icon === 'message') { %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.4 8.4 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.4 8.4 0 01-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 01-.9-3.8A8.5 8.5 0 018.7 3.9a8.4 8.4 0 013.8-.9h.5a8.5 8.5 0 018 8v.5z"/>
+            </svg>
+          <% } %>
+
+        </div>
+
+
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold transition text-slate-800 group-hover:text-emerald-700">
+            <%= link.title %>
+          </h3>
+
+          <p class="mt-1 text-xs text-slate-400">
+            <%= link.description %>
+          </p>
+        </div>
+
+
+        <svg class="w-5 h-5 transition shrink-0 text-slate-300 group-hover:translate-x-1 group-hover:text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7l7 7-7 7"/>
+        </svg>
+
+      </a>
+
+    <% }) %>
+
+  </div>
+</section>
+
+
+<!-- SECURITY SECTION -->
+
+<div class="grid max-w-5xl gap-5 lg:grid-cols-[1fr_.8fr]">
+
+
+  <!-- CHANGE PASSWORD -->
+
+  <section class="p-6 bg-white shadow-sm rounded-2xl ring-1 ring-slate-200/70 sm:p-8">
+
+    <div class="flex items-start gap-4 pb-5 mb-6 border-b border-slate-100">
+
+      <div class="flex items-center justify-center w-12 h-12 shrink-0 rounded-2xl bg-emerald-50 text-emerald-700">
+
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <rect x="4" y="10" width="16" height="11" rx="2"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10V7a4 4 0 118 0v3m-4 4v3"/>
+        </svg>
+
+      </div>
+
+      <div>
+        <h2 class="font-bold text-slate-900">
+          Change Password
+        </h2>
+
+        <p class="mt-1 text-sm text-slate-500">
+          Update your administrator account password.
+        </p>
+      </div>
+
+    </div>
+
+
+    <form id="pwForm" class="space-y-5">
+
+      <div>
+        <label for="current" class="block mb-2 text-sm font-semibold text-slate-700">
+          Current Password
+        </label>
+
+        <input
+          id="current"
+          type="password"
+          autocomplete="current-password"
+          required
+          class="w-full px-4 py-3 text-sm transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+          placeholder="Enter current password"
+        />
+      </div>
+
+
+      <div>
+        <label for="newPw" class="block mb-2 text-sm font-semibold text-slate-700">
+          New Password
+        </label>
+
+        <input
+          id="newPw"
+          type="password"
+          autocomplete="new-password"
+          required
+          minlength="6"
+          class="w-full px-4 py-3 text-sm transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10"
+          placeholder="At least 6 characters"
+        />
+
+        <p class="mt-2 text-xs text-slate-400">
+          Use a combination of letters, numbers and symbols.
+        </p>
+      </div>
+
+
+      <button
+        id="pwSubmit"
+        type="submit"
+        class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#174a34] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#216744] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+      >
+
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+
+        Update Password
+      </button>
+
+
+      <p id="msg" role="status" aria-live="polite" class="text-sm"></p>
+
+    </form>
+
+  </section>
+
+
+
+  <!-- SECURITY CHECKLIST -->
+
+  <aside class="rounded-2xl bg-gradient-to-br from-[#123b2b] to-[#286947] p-6 text-white shadow-lg shadow-emerald-950/10 sm:p-7">
+
+    <div class="flex items-center justify-center w-12 h-12 mb-5 rounded-2xl bg-white/10 text-emerald-100">
+
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
+      </svg>
+
+    </div>
+
+
+    <h2 class="text-xl font-extrabold brand-heading">
+      Security Checklist
+    </h2>
+
+
+    <ul class="mt-5 space-y-4 text-sm leading-6 text-emerald-50/85">
+
+      <li class="flex items-start gap-3">
+        <svg class="w-4 h-4 mt-1 shrink-0 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l4 4L19 6"/>
+        </svg>
+        Never share your administrator password.
+      </li>
+
+      <li class="flex items-start gap-3">
+        <svg class="w-4 h-4 mt-1 shrink-0 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l4 4L19 6"/>
+        </svg>
+        Avoid using the same password on multiple websites.
+      </li>
+
+      <li class="flex items-start gap-3">
+        <svg class="w-4 h-4 mt-1 shrink-0 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l4 4L19 6"/>
+        </svg>
+        Sign out when using a shared computer.
+      </li>
+
+      <li class="flex items-start gap-3">
+        <svg class="w-4 h-4 mt-1 shrink-0 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12l4 4L19 6"/>
+        </svg>
+        Use a strong password with letters, numbers and symbols.
+      </li>
+
+    </ul>
+
+
+    <div class="p-4 mt-8 border rounded-xl border-white/10 bg-white/10">
+
+      <p class="text-xs font-bold tracking-wider uppercase text-emerald-200">
+        Account Protection
+      </p>
+
+      <p class="mt-2 text-sm text-white/80">
+        Keep your administrator login credentials private and secure.
+      </p>
+
+    </div>
+
+  </aside>
+
+</div>
+
+
+<!-- PASSWORD UPDATE SCRIPT -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const pwForm = document.getElementById('pwForm');
+
+  if (!pwForm) return;
+
+  pwForm.addEventListener('submit', async function (e) {
+
+    e.preventDefault();
+
+    const currentPassword = document.getElementById('current').value;
+    const newPassword = document.getElementById('newPw').value;
+
+    const button = document.getElementById('pwSubmit');
+    const msg = document.getElementById('msg');
+
+    if (newPassword.length < 6) {
+      msg.textContent = 'New password must be at least 6 characters.';
+      msg.className = 'text-sm font-semibold text-rose-600';
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Updating...';
+
+    msg.textContent = '';
+
+    try {
+
+      const res = await fetch('/admin/api/change-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+
+        msg.textContent = data.message || 'Password changed successfully.';
+        msg.className = 'text-sm font-semibold text-emerald-700';
+
+        pwForm.reset();
+
+      } else {
+
+        msg.textContent = data.error || 'Unable to change password.';
+        msg.className = 'text-sm font-semibold text-rose-600';
+
+      }
+
+    } catch (error) {
+
+      console.error('Password update error:', error);
+
+      msg.textContent = 'Network error. Please try again.';
+      msg.className = 'text-sm font-semibold text-rose-600';
+
+    } finally {
+
+      button.disabled = false;
+      button.textContent = 'Update Password';
+
+    }
+
+  });
+
+});
+</script>

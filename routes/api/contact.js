@@ -1,0 +1,1 @@
+const r=require('express').Router(); const c=require('../../controllers/storeController'); r.post('/',c.contact); r.post('/newsletter', c.subscribeNewsletter); module.exports=r;

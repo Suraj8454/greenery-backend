@@ -1,0 +1,33 @@
+{
+  "name": "cityscape-greney-ecommerce-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/css/tailwind.css",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./public/css/tailwind.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0",
+    "mysql2": "^3.24.6"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.6.1",
+    "nodemon": "^3.1.14",
+    "postcss": "^8.5.31",
+    "tailwindcss": "^3.4.17"
+  }
+}

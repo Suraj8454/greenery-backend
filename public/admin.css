@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root{
+  font-family:'DM Sans',sans-serif;
+  color:#17271f;
+  background:#f4f7f4;
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+  --green-950:#102f22;
+  --green-900:#174a34;
+  --green-800:#216744;
+  --green-700:#2c7753;
+  --green-100:#e8f4ec;
+  --line:#e4ebe5;
+  --muted:#718078;
+  --surface:#fff;
+  --shadow-sm:0 2px 8px rgba(20,48,33,.035);
+  --shadow-md:0 12px 34px rgba(20,48,33,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;background:#f4f7f4;line-height:1.5}
+h1,h2,h3,h4,.brand-heading{font-family:'Manrope','DM Sans',sans-serif;letter-spacing:-.035em}
+h1{line-height:1.15}
+button,a,input,select,textarea{transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}
+a{ text-underline-offset:3px }
+button{cursor:pointer}
+input,select,textarea{color:#17271f;border-color:#dce5de!important;border-radius:12px!important;background:#fff}
+input,select{min-height:42px}
+textarea{min-height:100px;resize:vertical}
+input::placeholder,textarea::placeholder{color:#9aa69f}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#3b8060!important;box-shadow:0 0 0 4px rgba(59,128,96,.12)}
+button:focus-visible,a:focus-visible{outline:3px solid rgba(100,180,133,.6);outline-offset:3px}
+button[type=submit],.button-primary{box-shadow:0 5px 14px rgba(23,74,52,.12)}
+button[type=submit]:hover,.button-primary:hover{transform:translateY(-1px);filter:brightness(1.06)}
+img{max-width:100%}
+::selection{background:#cce8d4;color:#123b2b}
+.sidebar-link{position:relative;transition:background .2s ease,color .2s ease,transform .2s ease}
+.sidebar-link:hover{transform:translateX(2px)}
+.sidebar-link.active{background:linear-gradient(110deg,#2c7753,#22583f);color:#fff;box-shadow:0 8px 20px rgba(14,54,36,.18)}
+.sidebar-link.active .icon{color:#c4f0d2}
+.admin-sidebar{height:100vh;height:100dvh;overflow:hidden;box-shadow:10px 0 40px rgba(14,43,29,.06)}
+.admin-sidebar nav{min-height:0;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:none;-ms-overflow-style:none}
+.admin-sidebar nav::-webkit-scrollbar{display:none;width:0}
+.admin-main{background:radial-gradient(ellipse at 90% 0%,rgba(219,238,224,.4),transparent 34%),#f4f7f4}
+.admin-main>div:first-child{border-color:#e1e9e2}
+.admin-main h1{font-size:clamp(1.55rem,2vw,2rem);line-height:1.2;font-weight:800;letter-spacing:-.045em;color:#162a20}
+.admin-main h2{letter-spacing:-.025em}
+.admin-main .rounded-2xl.bg-white,.admin-main .rounded-3xl.bg-white{box-shadow:var(--shadow-sm);border-color:#e3ebe5}
+.stat-card{transition:transform .22s ease,box-shadow .22s ease;border:1px solid rgba(222,233,224,.9)}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.table-wrap,.admin-main .overflow-x-auto{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.data-table,.admin-main table{border-collapse:separate;border-spacing:0}
+.data-table tbody tr,.admin-main table tbody tr{transition:background .15s ease}
+.data-table tbody tr:hover,.admin-main table tbody tr:hover{background:#f7fbf8}
+.data-table thead th,.admin-main table thead th{white-space:nowrap;background:#f7faf7;color:#65736a;font-size:10px;letter-spacing:.09em;font-weight:800;border-bottom:1px solid #e6ece7}
+.data-table td,.admin-main table td{border-bottom:1px solid #edf1ed}
+.data-table tbody tr:last-child td,.admin-main table tbody tr:last-child td{border-bottom:0}
+.admin-list-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 18px;background:linear-gradient(180deg,#fff,#fbfdfb);border-bottom:1px solid #edf1ed}
+.admin-list-search{width:min(100%,360px);min-height:42px;padding:10px 14px 10px 40px;border:1px solid #dfe8e1;border-radius:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23718078' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") no-repeat 13px center;font-size:13px}
+.admin-list-count{font-size:12px;color:#7b8980;font-weight:600}
+.admin-empty{padding:48px 20px;text-align:center;color:#7b8980}
+.admin-main .rounded-xl.border,.admin-main .rounded-2xl.border{border-color:#e1e9e2}
+.admin-main form label{display:block;line-height:1.45}
+.admin-main form label input,.admin-main form label select,.admin-main form label textarea{margin-top:7px}
+.admin-main summary{list-style:none}
+.admin-main summary::-webkit-details-marker{display:none}
+.admin-main details>summary{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.admin-main details>summary::after{content:'＋';font-size:18px;color:#2c7753}
+.admin-main details[open]>summary::after{content:'−'}
+.admin-main .rounded-xl.bg-\[\#174a34\],.admin-main a.bg-\[\#174a34\]{box-shadow:0 5px 14px rgba(23,74,52,.12)}
+.admin-main .rounded-xl.bg-\[\#174a34\]:hover,.admin-main a.bg-\[\#174a34\]:hover{background:#216744}
+.admin-main .text-3xl{letter-spacing:-.045em}
+.admin-main .text-slate-500{color:#748178}
+.admin-main .text-xs{line-height:1.5}
+.admin-main .shadow-sm{box-shadow:var(--shadow-sm)}
+.admin-main .rounded-2xl,.admin-main .rounded-3xl{border-radius:18px}
+.admin-main .bg-white{background-color:#fff}
+.admin-main .ring-slate-200,.admin-main .ring-slate-200\/70{--tw-ring-color:#e4ebe5}
+.admin-main .divide-slate-100>:not([hidden])~:not([hidden]){border-color:#edf1ed}
+.admin-main .border-slate-100{border-color:#edf1ed}
+.admin-main .border-slate-200{border-color:#e1e9e2}
+.admin-main .text-slate-900{color:#17271f}
+.admin-main .text-slate-800{color:#26372d}
+.admin-main .text-slate-600{color:#58685e}
+.admin-main .text-slate-400{color:#94a098}
+.admin-main .rounded-full{letter-spacing:.01em}
+@keyframes adminFadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.admin-main>.mx-auto{animation:adminFadeUp .35s ease both}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media(max-width:767px){
+ .admin-main{margin-left:0!important;padding:1.1rem!important;padding-top:5rem!important}
+ .admin-sidebar{transform:translateX(-100%);transition:transform .25s ease}
+ .admin-sidebar.is-open{transform:translateX(0)}
+ .mobile-scrim{display:none}
+ .mobile-scrim.is-open{display:block}
+ .mobile-menu-button{display:flex!important}
+ .admin-list-toolbar{align-items:stretch}
+ .admin-list-search{width:100%}
+}
+@media(min-width:768px){.mobile-menu-button{display:none!important}.mobile-scrim{display:none!important}}
+
+/* Cityscape admin refinement: restrained typography and compact list-first workflow */
+.admin-main{font-family:'DM Sans',sans-serif;font-size:14px;color:#334155}
+.admin-main h1{font-family:'Manrope','DM Sans',sans-serif;font-size:clamp(1.45rem,1.9vw,1.8rem)!important;font-weight:650!important;letter-spacing:-.035em!important;line-height:1.25}
+.admin-main h2,.admin-main h3{font-family:'Manrope','DM Sans',sans-serif;font-weight:600!important;letter-spacing:-.02em}
+.admin-main .font-extrabold,.admin-main .font-black{font-weight:650!important}
+.admin-main .font-bold{font-weight:600!important}
+.admin-main .font-semibold{font-weight:550!important}
+.admin-main .text-3xl{font-size:1.65rem;line-height:1.25}
+.admin-main table{font-size:13px}
+.admin-main table th{font-weight:600!important;letter-spacing:.06em}
+.admin-main table td{font-weight:400}
+.admin-field{min-height:42px;border:1px solid #dbe3dc;border-radius:10px;background:#fff;padding:10px 12px;font:400 13px 'DM Sans',sans-serif;color:#1f2937;outline:none;transition:border-color .15s,box-shadow .15s}
+.admin-field:focus{border-color:#39815b;box-shadow:0 0 0 3px rgba(57,129,91,.11)}
+.admin-field::placeholder{color:#9aa69d}
+.admin-main button,.admin-main a{transition:background-color .15s,border-color .15s,color .15s,box-shadow .15s}
+@media(max-width:640px){.admin-main{padding:1rem!important}.admin-main h1{font-size:1.45rem!important}}

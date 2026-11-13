@@ -1,0 +1,12 @@
+const router = require('express').Router();
+const c = require('../../controllers/adminController');
+const admin = require('../../middleware/adminMiddleware');
+const upload = require('../../middleware/productUpload');
+router.get('/', admin, c.productsView);
+router.get('/new', admin, c.productFormView);
+router.get('/:id/edit', admin, c.productFormView);
+router.post('/', admin, upload.array('images', 8), c.createProduct);
+router.post('/:id', admin, upload.array('images', 8), c.updateProduct);
+router.put('/:id', admin, upload.array('images', 8), c.updateProduct);
+router.get('/:id/delete', admin, c.deleteProduct);
+module.exports = router;

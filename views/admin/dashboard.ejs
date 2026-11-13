@@ -1,0 +1,671 @@
+
+
+
+
+<%
+const money = (n) =>
+  new Intl.NumberFormat('en-IN', {
+    maximumFractionDigits: 0
+  }).format(Number(n || 0));
+
+const statusClass = (s) => ({
+  Delivered: 'bg-emerald-50 text-emerald-700',
+  Confirmed: 'bg-blue-50 text-blue-700',
+  Processing: 'bg-amber-50 text-amber-700',
+  Packed: 'bg-violet-50 text-violet-700',
+  Shipped: 'bg-indigo-50 text-indigo-700',
+  'Out for Delivery': 'bg-orange-50 text-orange-700',
+  Cancelled: 'bg-rose-50 text-rose-700'
+})[s] || 'bg-slate-100 text-slate-600';
+
+const chartData = (monthlyRevenue || []).map(m => ({
+  month: m.month,
+  revenue: Number(m.revenue || 0)
+}));
+
+const maxRevenue = Math.max(
+  1,
+  ...chartData.map(m => m.revenue)
+);
+
+const totalChartRevenue = chartData.reduce(
+  (sum, m) => sum + m.revenue,
+  0
+);
+
+const monthLabel = (value) => {
+  if (!value) return '-';
+
+  const date = new Date(
+    String(value).slice(0, 7) + '-02T00:00:00'
+  );
+
+  return date.toLocaleDateString('en-IN', {
+    month: 'short'
+  });
+};
+%>
+
+<div class="mx-auto max-w-[1500px] space-y-7">
+
+  <!-- ====================================== -->
+  <!-- HERO SECTION -->
+  <!-- ====================================== -->
+
+  <section class="relative overflow-hidden rounded-3xl bg-[#183D2D] px-6 py-8 text-white shadow-xl shadow-emerald-950/10 sm:px-9 sm:py-10">
+
+    <div class="pointer-events-none absolute -right-10 -top-24 h-72 w-72 rounded-full border-[40px] border-white/5"></div>
+
+    <div class="absolute w-64 h-64 rounded-full pointer-events-none -bottom-28 right-28 bg-emerald-400/10 blur-3xl"></div>
+
+    <div class="relative flex flex-col justify-between gap-6 md:flex-row md:items-end">
+
+      <div>
+        <p class="mb-3 text-[11px] font-semibold uppercase tracking-[.2em] text-emerald-200">
+          CITYSCAPE GREENERY / OVERVIEW
+        </p>
+
+        <h1 class="text-3xl font-semibold tracking-tight brand-heading sm:text-4xl">
+          Store Dashboard
+        </h1>
+
+        <p class="max-w-xl mt-2 text-sm leading-6 text-emerald-50/75">
+          Your store at a glance. Track sales, orders, customers and inventory from one place.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+
+        <a
+          href="/admin/products/new"
+          class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[#183D2D] transition hover:bg-emerald-50"
+        >
+          + Add Product
+        </a>
+
+        <a
+          href="/admin/orders"
+          class="inline-flex items-center justify-center px-4 py-3 text-sm font-medium text-white transition border rounded-xl border-white/25 hover:bg-white/10"
+        >
+          View Orders →
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ====================================== -->
+  <!-- STATISTICS CARDS -->
+  <!-- ====================================== -->
+
+  <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+    <!-- Revenue -->
+
+    <article class="p-5 bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+      <div class="flex items-center justify-between">
+
+        <span class="text-sm font-medium text-slate-500">
+          Total Revenue
+        </span>
+
+        <span class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-emerald-50 text-emerald-700">
+          ₹
+        </span>
+
+      </div>
+
+      <p class="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
+        ₹<%= money(revenue) %>
+      </p>
+
+      <p class="mt-2 text-xs text-slate-500">
+        Excludes cancelled orders
+      </p>
+
+    </article>
+
+
+    <!-- Orders -->
+
+    <article class="p-5 bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+      <div class="flex items-center justify-between">
+
+        <span class="text-sm font-medium text-slate-500">
+          All Orders
+        </span>
+
+        <span class="flex items-center justify-center w-10 h-10 text-lg text-blue-700 rounded-xl bg-blue-50">
+          ▤
+        </span>
+
+      </div>
+
+      <p class="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
+        <%= orders %>
+      </p>
+
+      <p class="mt-2 text-xs text-slate-500">
+        <%= pendingOrders %> need processing
+      </p>
+
+    </article>
+
+
+    <!-- Customers -->
+
+    <article class="p-5 bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+      <div class="flex items-center justify-between">
+
+        <span class="text-sm font-medium text-slate-500">
+          Customers
+        </span>
+
+        <span class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-violet-50 text-violet-700">
+          ♙
+        </span>
+
+      </div>
+
+      <p class="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
+        <%= users %>
+      </p>
+
+      <p class="mt-2 text-xs text-slate-500">
+        Registered accounts
+      </p>
+
+    </article>
+
+
+    <!-- Products -->
+
+    <article class="p-5 bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+      <div class="flex items-center justify-between">
+
+        <span class="text-sm font-medium text-slate-500">
+          Active Catalogue
+        </span>
+
+        <span class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-amber-50 text-amber-700">
+          ▧
+        </span>
+
+      </div>
+
+      <p class="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
+        <%= products %>
+      </p>
+
+      <p class="mt-2 text-xs <%= lowStockCount ? 'font-medium text-rose-600' : 'text-slate-500' %>">
+        <%= lowStockCount %> low-stock items
+      </p>
+
+    </article>
+
+  </section>
+
+
+  <!-- ====================================== -->
+  <!-- REVENUE + INVENTORY -->
+  <!-- ====================================== -->
+
+  <section class="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,1fr)]">
+
+
+    <!-- REVENUE GRAPH -->
+
+    <article class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+      <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-5 border-b border-slate-100 sm:px-6">
+
+        <div>
+          <h2 class="text-base font-semibold text-slate-900">
+            Revenue Overview
+          </h2>
+
+          <p class="mt-1 text-xs text-slate-500">
+            Monthly revenue · Last 12 months
+          </p>
+        </div>
+
+        <span class="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-800">
+          INR (₹)
+        </span>
+
+      </div>
+
+
+      <div class="p-5 sm:p-6">
+
+        <% if (chartData.length > 0) { %>
+
+          <div class="flex h-[250px] w-full gap-3">
+
+            <!-- Y AXIS -->
+
+            <div class="flex w-14 shrink-0 flex-col justify-between pb-8 text-right text-[10px] text-slate-400 sm:w-20">
+
+              <span>₹<%= money(maxRevenue) %></span>
+
+              <span>₹<%= money(maxRevenue * 0.75) %></span>
+
+              <span>₹<%= money(maxRevenue * 0.50) %></span>
+
+              <span>₹<%= money(maxRevenue * 0.25) %></span>
+
+              <span>₹0</span>
+
+            </div>
+
+
+            <!-- GRAPH AREA -->
+
+            <div class="relative flex items-stretch flex-1 min-w-0 border-b border-l border-slate-200">
+
+              <!-- GRID LINES -->
+
+              <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+
+                <% for (let i = 0; i < 5; i++) { %>
+
+                  <div class="w-full border-t border-dashed border-slate-100"></div>
+
+                <% } %>
+
+              </div>
+
+
+              <!-- BAR CHART -->
+
+              <div class="relative z-10 flex items-end justify-around w-full gap-1 px-1 sm:gap-3 sm:px-3">
+
+                <% chartData.forEach((item) => {
+
+                  const percentage = item.revenue > 0
+                    ? Math.max(3, (item.revenue / maxRevenue) * 100)
+                    : 0;
+
+                %>
+
+                  <div class="relative flex flex-col items-center justify-end flex-1 h-full min-w-0 group">
+
+                    <!-- TOOLTIP -->
+
+                    <div class="pointer-events-none absolute bottom-full z-30 mb-2 hidden whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-[11px] font-medium text-white shadow-lg group-hover:block">
+
+                      ₹<%= money(item.revenue) %>
+
+                    </div>
+
+
+                    <!-- BAR -->
+
+                    <div class="flex h-[calc(100%-28px)] w-full items-end justify-center">
+
+                      <% if (item.revenue > 0) { %>
+
+                        <div
+                          class="w-full max-w-12 rounded-t-md bg-gradient-to-t from-[#183D2D] to-[#80B493] transition-all duration-300 group-hover:brightness-110"
+                          style="height: <%= percentage %>%"
+                        ></div>
+
+                      <% } else { %>
+
+                        <div class="w-full border-t-2 max-w-12 border-slate-200"></div>
+
+                      <% } %>
+
+                    </div>
+
+
+                    <!-- MONTH LABEL -->
+
+                    <div class="flex items-end justify-center h-7">
+
+                      <span class="whitespace-nowrap text-[9px] font-medium text-slate-500 sm:text-xs">
+                        <%= monthLabel(item.month) %>
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                <% }); %>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- REVENUE SUMMARY -->
+
+          <div class="flex flex-wrap items-center justify-between gap-4 pt-5 mt-6 border-t border-slate-100">
+
+            <div>
+              <p class="text-xs text-slate-500">
+                Total revenue for displayed period
+              </p>
+
+              <p class="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+                ₹<%= money(totalChartRevenue) %>
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+
+              <span class="h-2.5 w-2.5 rounded-sm bg-emerald-700"></span>
+
+              Monthly Revenue
+
+            </div>
+
+          </div>
+
+        <% } else { %>
+
+          <div class="flex h-[250px] flex-col items-center justify-center text-center">
+
+            <span class="flex items-center justify-center w-12 h-12 mb-3 text-xl rounded-2xl bg-slate-100 text-slate-500">
+              ↗
+            </span>
+
+            <p class="text-sm font-semibold text-slate-700">
+              No Revenue Activity Yet
+            </p>
+
+            <p class="mt-1 text-xs text-slate-500">
+              Monthly revenue will appear when orders are placed.
+            </p>
+
+          </div>
+
+        <% } %>
+
+      </div>
+
+    </article>
+
+
+
+    <!-- INVENTORY ALERTS -->
+
+    <article class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+      <div class="flex items-start justify-between px-5 py-5 border-b border-slate-100">
+
+        <div>
+
+          <h2 class="text-base font-semibold text-slate-900">
+            Inventory Alerts
+          </h2>
+
+          <p class="mt-1 text-xs text-slate-500">
+            Products with 5 units or fewer
+          </p>
+
+        </div>
+
+        <span class="rounded-full px-2.5 py-1 text-xs font-semibold <%= lowStockCount ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-700' %>">
+
+          <%= lowStockCount %> alerts
+
+        </span>
+
+      </div>
+
+
+      <div class="divide-y divide-slate-100">
+
+        <% if (lowStockProducts.length) {
+
+          lowStockProducts.forEach(p => {
+
+        %>
+
+          <div class="flex items-center gap-3 px-5 py-3.5">
+
+            <img
+              src="<%= p.img || '/favicon.svg' %>"
+              alt=""
+              class="object-cover border h-11 w-11 rounded-xl border-slate-100 bg-slate-50"
+              onerror="this.style.visibility='hidden'"
+            >
+
+            <div class="flex-1 min-w-0">
+
+              <p class="text-sm font-medium truncate text-slate-800">
+                <%= p.name %>
+              </p>
+
+              <p class="mt-1 text-[11px] text-slate-400">
+                <%= p.sku || ('Product #' + p.id) %>
+              </p>
+
+            </div>
+
+            <span class="shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-semibold <%= Number(p.stock_quantity) === 0 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-800' %>">
+
+              <%= p.stock_quantity %> left
+
+            </span>
+
+          </div>
+
+        <% }) %>
+
+        <% } else { %>
+
+          <div class="px-5 py-10 text-center">
+
+            <span class="flex items-center justify-center mx-auto mb-3 rounded-full h-11 w-11 bg-emerald-50 text-emerald-700">
+              ✓
+            </span>
+
+            <p class="text-sm font-semibold text-slate-700">
+              Stock Looks Healthy
+            </p>
+
+            <p class="mt-1 text-xs text-slate-500">
+              No products at or below 5 units.
+            </p>
+
+          </div>
+
+        <% } %>
+
+      </div>
+
+
+      <a
+        href="/admin/inventory"
+        class="flex items-center justify-between px-5 py-4 text-sm font-medium transition border-t border-slate-100 text-emerald-800 hover:bg-emerald-50/60"
+      >
+
+        Open Inventory
+
+        <span>→</span>
+
+      </a>
+
+    </article>
+
+  </section>
+
+
+
+  <!-- ====================================== -->
+  <!-- RECENT ORDERS -->
+  <!-- ====================================== -->
+
+  <section class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/80">
+
+    <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-5 border-b border-slate-100 sm:px-6">
+
+      <div>
+
+        <h2 class="text-base font-semibold text-slate-900">
+          Recent Orders
+        </h2>
+
+        <p class="mt-1 text-xs text-slate-500">
+          Latest activity from your store
+        </p>
+
+      </div>
+
+      <a
+        href="/admin/orders"
+        class="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-700 transition hover:border-emerald-300 hover:text-emerald-800"
+      >
+        Manage Orders →
+      </a>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table class="w-full text-left data-table">
+
+        <thead class="bg-slate-50/80">
+
+          <tr>
+
+            <th class="px-5 py-3.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Order
+            </th>
+
+            <th class="px-5 py-3.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Customer
+            </th>
+
+            <th class="px-5 py-3.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Amount
+            </th>
+
+            <th class="px-5 py-3.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Status
+            </th>
+
+            <th class="px-5 py-3.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Date
+            </th>
+
+            <th class="px-5 py-3.5 text-right text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+              Action
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody class="divide-y divide-slate-100">
+
+          <% if (recentOrders.length) {
+
+            recentOrders.forEach(o => {
+
+          %>
+
+            <tr class="transition hover:bg-slate-50/70">
+
+              <td class="px-5 py-4 text-sm font-semibold text-slate-900">
+                #<%= o.id %>
+              </td>
+
+              <td class="px-5 py-4">
+
+                <p class="max-w-[180px] truncate text-sm font-medium text-slate-700">
+                  <%= o.customer_name || 'Guest customer' %>
+                </p>
+
+              </td>
+
+              <td class="px-5 py-4 text-sm font-medium text-slate-800">
+                ₹<%= money(o.total) %>
+              </td>
+
+              <td class="px-5 py-4">
+
+                <span class="inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium <%= statusClass(o.status) %>">
+
+                  <%= o.status || 'Pending' %>
+
+                </span>
+
+              </td>
+
+              <td class="px-5 py-4 text-xs text-slate-500">
+
+                <%= o.created_at
+                  ? new Date(o.created_at).toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric'
+                    })
+                  : '—'
+                %>
+
+              </td>
+
+              <td class="px-5 py-4 text-right">
+
+                <a
+                  href="/admin/orders/<%= o.id %>"
+                  class="text-xs font-medium text-emerald-800 hover:underline"
+                >
+                  Details →
+                </a>
+
+              </td>
+
+            </tr>
+
+          <% }) %>
+
+          <% } else { %>
+
+            <tr>
+
+              <td colspan="6" class="px-5 py-12 text-center">
+
+                <p class="text-sm font-medium text-slate-700">
+                  No Orders Yet
+                </p>
+
+                <p class="mt-1 text-xs text-slate-500">
+                  New customer orders will show up here.
+                </p>
+
+              </td>
+
+            </tr>
+
+          <% } %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+
+  <p class="pb-2 text-center text-[11px] text-slate-400">
+    Dashboard data is calculated from your store database.
+    Low stock threshold: 5 units.
+  </p>
+
+</div>

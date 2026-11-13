@@ -1,0 +1,1 @@
+const r=require('express').Router(); const c=require('../../controllers/storeController'); r.get('/',c.testimonials); module.exports=r;

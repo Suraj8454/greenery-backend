@@ -1,0 +1,562 @@
+
+<%
+const isEdit = !!post;
+
+const fields = [
+  ['focus_keyword', 'Focus Keyword'],
+  ['meta_title', 'SEO Title'],
+  ['meta_description', 'Meta Description'],
+  ['canonical_url', 'Canonical URL'],
+  ['og_title', 'Open Graph Title'],
+  ['og_description', 'Open Graph Description']
+];
+
+const categories = [
+  'Plant Care',
+  'Indoor Plants',
+  'Outdoor Plants',
+  'Gardening',
+  'Planters & Decor',
+  'Sustainability',
+  'Buying Guides',
+  'Corporate Gifting'
+];
+
+const tags = [
+  'plant-care',
+  'indoor-plants',
+  'outdoor-plants',
+  'gardening',
+  'planters',
+  'home-decor',
+  'air-purifying',
+  'succulents',
+  'sustainability',
+  'corporate-gifting'
+];
+
+const selectedTags = String(post?.tags || '')
+  .split(',')
+  .map(t => t.trim())
+  .filter(Boolean);
+
+const currentStatus = post?.status || (post?.is_active ? 'published' : 'draft');
+%>
+
+<div class="pb-10 mx-auto max-w-7xl space-y-7">
+
+  <!-- HEADER -->
+  <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+    <div>
+      <a href="/admin/blog"
+         class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-800 hover:text-emerald-950">
+        <span>←</span> Back to Blogs
+      </a>
+
+      <div class="flex flex-wrap items-center gap-3 mt-4">
+        <h1 class="text-3xl font-black tracking-tight text-slate-900">
+          <%= isEdit ? 'Edit Article' : 'Create New Article' %>
+        </h1>
+
+        <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-extrabold tracking-widest text-emerald-800">
+          BLOG STUDIO
+        </span>
+      </div>
+
+      <p class="mt-2 text-sm text-slate-500">
+        Write, optimize and publish content for your audience.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      <span class="text-xs font-semibold text-slate-500">Content Management</span>
+    </div>
+  </div>
+
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+    action="<%= isEdit ? '/admin/blog/' + post.id : '/admin/blog' %>"
+    class="space-y-6"
+  >
+
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+      <!-- MAIN CONTENT -->
+      <div class="space-y-6 xl:col-span-2">
+
+        <!-- ARTICLE INFORMATION -->
+        <section class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200">
+
+          <div class="px-6 py-5 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-emerald-50 text-emerald-800">
+                ✍
+              </div>
+
+              <div>
+                <h2 class="font-extrabold text-slate-900">Article Information</h2>
+                <p class="mt-1 text-xs text-slate-500">Basic details and article content</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-5">
+
+            <label class="block">
+              <span class="text-sm font-bold text-slate-700">
+                Article Title <span class="text-rose-500">*</span>
+              </span>
+
+              <input
+                required
+                name="title"
+                value="<%= post?.title || '' %>"
+                placeholder="Enter an engaging article title"
+                class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm text-slate-800 outline-none transition focus:border-emerald-700 focus:bg-white focus:ring-4 focus:ring-emerald-700/10"
+              >
+            </label>
+
+            <label class="block">
+              <span class="text-sm font-bold text-slate-700">URL Slug</span>
+
+              <div class="flex mt-2 overflow-hidden border rounded-xl border-slate-200 bg-slate-50 focus-within:border-emerald-700 focus-within:ring-4 focus-within:ring-emerald-700/10">
+                <span class="flex items-center px-3 text-xs border-r border-slate-200 bg-slate-100 text-slate-500">
+                  /blog/
+                </span>
+
+                <input
+                  name="slug"
+                  value="<%= post?.slug || '' %>"
+                  placeholder="article-url-slug"
+                  class="flex-1 min-w-0 px-4 py-3 text-sm bg-transparent outline-none"
+                >
+              </div>
+            </label>
+
+            <label class="block">
+              <span class="text-sm font-bold text-slate-700">
+                Article Content <span class="text-rose-500">*</span>
+              </span>
+
+              <textarea
+                required
+                name="content"
+                rows="16"
+                placeholder="Write your article content here..."
+                class="w-full p-4 mt-2 text-sm leading-7 transition border outline-none rounded-xl border-slate-200 bg-slate-50 text-slate-700 focus:border-emerald-700 focus:bg-white focus:ring-4 focus:ring-emerald-700/10"
+              ><%= post?.content || '' %></textarea>
+
+              <span class="block mt-2 text-xs text-slate-400">
+                HTML content is supported. Make sure storefront output is sanitized before rendering.
+              </span>
+            </label>
+
+            <label class="block">
+              <span class="text-sm font-bold text-slate-700">Article Excerpt / Social Summary</span>
+
+              <textarea
+                name="excerpt"
+                rows="4"
+                placeholder="Write a short summary of your article..."
+                class="w-full p-4 mt-2 text-sm transition border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-700 focus:bg-white"
+              ><%= post?.excerpt || '' %></textarea>
+            </label>
+
+          </div>
+        </section>
+
+        <!-- SEO OPTIMIZATION -->
+        <section class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200">
+
+          <div class="px-6 py-5 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center w-10 h-10 text-lg text-blue-700 rounded-xl bg-blue-50">
+                ◎
+              </div>
+
+              <div>
+                <h2 class="font-extrabold text-slate-900">SEO Optimization</h2>
+                <p class="mt-1 text-xs text-slate-500">Optimize your article for search engines</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-5">
+
+            <div class="grid gap-5 md:grid-cols-2">
+
+              <% fields.forEach(([key, label]) => { %>
+
+                <label class="block <%= ['meta_description', 'og_description'].includes(key) ? 'md:col-span-2' : '' %>">
+
+                  <span class="text-sm font-bold text-slate-700"><%= label %></span>
+
+                  <% if (['meta_description', 'og_description'].includes(key)) { %>
+
+                    <textarea
+                      name="<%= key %>"
+                      rows="3"
+                      placeholder="Write <%= label.toLowerCase() %>..."
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none transition focus:border-emerald-700 focus:bg-white"
+                    ><%= post?.[key] || '' %></textarea>
+
+                  <% } else { %>
+
+                    <input
+                      name="<%= key %>"
+                      value="<%= post?.[key] || '' %>"
+                      placeholder="Enter <%= label.toLowerCase() %>"
+                      class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none transition focus:border-emerald-700 focus:bg-white"
+                    >
+
+                  <% } %>
+
+                </label>
+
+              <% }) %>
+
+              <label class="block md:col-span-2">
+                <span class="text-sm font-bold text-slate-700">Robots Directive</span>
+
+                <select
+                  name="meta_robots"
+                  class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+                >
+                  <% ['index,follow', 'noindex,follow', 'index,nofollow', 'noindex,nofollow'].forEach(value => { %>
+                    <option
+                      value="<%= value %>"
+                      <%= (post?.meta_robots || 'index,follow') === value ? 'selected' : '' %>
+                    >
+                      <%= value %>
+                    </option>
+                  <% }) %>
+                </select>
+              </label>
+
+            </div>
+
+            <!-- GOOGLE PREVIEW -->
+            <div class="p-5 border rounded-2xl border-slate-200 bg-slate-50">
+
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-[10px] font-extrabold uppercase tracking-[.16em] text-slate-500">
+                  Google Search Preview
+                </p>
+
+                <span class="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-slate-500">
+                  LIVE PREVIEW
+                </span>
+              </div>
+
+              <p
+                id="previewTitle"
+                class="mt-4 text-lg font-semibold text-blue-800 break-words"
+              ><%= post?.meta_title || post?.title || 'Your article title' %></p>
+
+              <p class="mt-1 text-xs text-emerald-800">
+                <%= post?.canonical_url || 'https://yourwebsite.com/blog/your-article' %>
+              </p>
+
+              <p
+                id="previewDescription"
+                class="mt-2 text-sm leading-6 break-words text-slate-600"
+              ><%= post?.meta_description || 'Your article description will appear here.' %></p>
+
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="space-y-6">
+
+        <!-- PUBLISH SETTINGS -->
+        <section class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-amber-50">
+              ⚙
+            </div>
+
+            <div>
+              <h2 class="font-extrabold text-slate-900">Publish Settings</h2>
+              <p class="text-xs text-slate-500">Control article visibility</p>
+            </div>
+          </div>
+
+          <label class="block">
+            <span class="text-sm font-bold text-slate-700">Publishing Status</span>
+
+            <select
+              name="status"
+              class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+            >
+              <option value="draft" <%= currentStatus === 'draft' ? 'selected' : '' %>>
+                Draft
+              </option>
+
+              <option value="published" <%= currentStatus === 'published' ? 'selected' : '' %>>
+                Published
+              </option>
+            </select>
+          </label>
+
+          <label class="block mt-5">
+            <span class="text-sm font-bold text-slate-700">Publish Date / Time</span>
+
+            <input
+              type="datetime-local"
+              name="published_at"
+              value="<%= post?.published_at && !isNaN(new Date(post.published_at).getTime()) ? new Date(new Date(post.published_at).getTime() - new Date(post.published_at).getTimezoneOffset() * 60000).toISOString().slice(0,16) : '' %>"
+              class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+            >
+          </label>
+
+          <div class="my-5 border-t border-slate-100"></div>
+
+          <label class="block">
+            <span class="text-sm font-bold text-slate-700">Author</span>
+
+            <input
+              name="author"
+              value="<%= post?.author || 'Cityscape Team' %>"
+              class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+            >
+          </label>
+
+          <label class="block mt-5">
+            <span class="text-sm font-bold text-slate-700">Reading Time (minutes)</span>
+
+            <input
+              type="number"
+              min="1"
+              max="120"
+              name="reading_minutes"
+              value="<%= post?.reading_minutes || 5 %>"
+              class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+            >
+          </label>
+
+        </section>
+
+        <!-- CATEGORY AND TAGS -->
+        <section class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-purple-50">
+              # 
+            </div>
+
+            <div>
+              <h2 class="font-extrabold text-slate-900">Category & Tags</h2>
+              <p class="text-xs text-slate-500">Organize your article</p>
+            </div>
+          </div>
+
+          <label class="block">
+            <span class="text-sm font-bold text-slate-700">Category</span>
+
+            <select
+              name="category"
+              class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+            >
+              <option value="">Choose Category</option>
+
+              <% categories.forEach(c => { %>
+                <option value="<%= c %>" <%= post?.category === c ? 'selected' : '' %>>
+                  <%= c %>
+                </option>
+              <% }) %>
+
+              <% if (post?.category && !categories.includes(post.category)) { %>
+                <option value="<%= post.category %>" selected>
+                  <%= post.category %>
+                </option>
+              <% } %>
+            </select>
+          </label>
+
+          <label class="block mt-5">
+            <span class="text-sm font-bold text-slate-700">Tags</span>
+
+            <select
+              name="tags"
+              multiple
+              size="7"
+              class="w-full p-3 mt-2 text-sm border outline-none rounded-xl border-slate-200 bg-slate-50 focus:border-emerald-700"
+            >
+              <% tags.forEach(tag => { %>
+                <option
+                  value="<%= tag %>"
+                  <%= selectedTags.includes(tag) ? 'selected' : '' %>
+                >
+                  <%= tag.replace(/-/g, ' ') %>
+                </option>
+              <% }) %>
+            </select>
+
+            <span class="block mt-2 text-xs leading-5 text-slate-400">
+              Hold Ctrl / Cmd to select multiple tags.
+            </span>
+          </label>
+
+          <label class="block mt-5">
+            <span class="text-sm font-bold text-slate-700">Hashtags</span>
+
+            <input
+              name="hashtags"
+              value="<%= String(post?.hashtags || '').replace(/#/g, '') %>"
+              placeholder="greenliving, plantlover"
+              class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-sm outline-none focus:border-emerald-700"
+            >
+          </label>
+
+        </section>
+
+        <!-- FEATURED IMAGE -->
+        <section class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200">
+
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex items-center justify-center w-10 h-10 text-lg rounded-xl bg-orange-50">
+              ▧
+            </div>
+
+            <div>
+              <h2 class="font-extrabold text-slate-900">Featured Image</h2>
+              <p class="text-xs text-slate-500">Article cover image</p>
+            </div>
+          </div>
+
+          <div
+            id="imagePreviewBox"
+            class="<%= post?.image ? '' : 'hidden' %> mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+          >
+            <img
+              id="imagePreview"
+              src="<%= post?.image || '' %>"
+              alt="Featured image preview"
+              class="object-cover w-full h-44"
+            >
+          </div>
+
+          <label class="flex flex-col items-center justify-center px-4 text-center transition border-2 border-dashed cursor-pointer rounded-xl border-slate-200 bg-slate-50 py-7 hover:border-emerald-500 hover:bg-emerald-50/40">
+            <span class="text-2xl text-emerald-800">↑</span>
+
+            <span class="mt-2 text-sm font-bold text-slate-700">
+              Choose an image
+            </span>
+
+            <span class="mt-1 text-xs text-slate-400">
+              JPG, PNG or WEBP
+            </span>
+
+            <input
+              id="imageFile"
+              type="file"
+              name="image_file"
+              accept="image/*"
+              class="hidden"
+            >
+          </label>
+
+          <input type="hidden" name="image" value="<%= post?.image || '' %>">
+
+          <p class="mt-3 text-xs leading-5 text-slate-400">
+            Upload a relevant image for your article. Existing image will remain if no new image is selected, provided your backend preserves it.
+          </p>
+
+        </section>
+
+      </div>
+    </div>
+
+    <!-- STICKY SAVE BAR -->
+    <div class="sticky z-20 flex flex-col justify-between gap-4 p-4 border shadow-xl bottom-4 rounded-2xl border-slate-200 bg-white/95 backdrop-blur sm:flex-row sm:items-center">
+
+      <div>
+        <p class="text-sm font-extrabold text-slate-800">
+          <%= isEdit ? 'Ready to update?' : 'Ready to publish?' %>
+        </p>
+
+        <p class="mt-1 text-xs text-slate-500">
+          <%= isEdit ? 'Save your latest article changes.' : 'Review the details before creating your article.' %>
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="/admin/blog"
+          class="inline-flex items-center justify-center px-5 py-3 text-sm font-bold transition border rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50"
+        >
+          Cancel
+        </a>
+
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl bg-emerald-900 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-900/15 transition hover:-translate-y-0.5 hover:bg-emerald-800"
+        >
+          <%= isEdit ? 'Save Changes' : 'Create Article' %>
+          <span class="ml-2">→</span>
+        </button>
+      </div>
+
+    </div>
+
+  </form>
+</div>
+
+<script>
+(() => {
+  const title = document.querySelector('[name="title"]');
+  const metaTitle = document.querySelector('[name="meta_title"]');
+  const metaDescription = document.querySelector('[name="meta_description"]');
+
+  const previewTitle = document.getElementById('previewTitle');
+  const previewDescription = document.getElementById('previewDescription');
+
+  const imageFile = document.getElementById('imageFile');
+  const imagePreview = document.getElementById('imagePreview');
+  const imagePreviewBox = document.getElementById('imagePreviewBox');
+
+  function updatePreview() {
+    if (!previewTitle || !previewDescription) return;
+
+    previewTitle.textContent =
+      metaTitle?.value || title?.value || 'Your article title';
+
+    previewDescription.textContent =
+      metaDescription?.value || 'Your article description will appear here.';
+  }
+
+  [title, metaTitle, metaDescription].forEach(field => {
+    field?.addEventListener('input', updatePreview);
+  });
+
+  imageFile?.addEventListener('change', event => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      imageFile.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      imagePreview.src = e.target.result;
+      imagePreviewBox.classList.remove('hidden');
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  updatePreview();
+})();
+</script>

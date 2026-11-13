@@ -1,0 +1,1 @@
+const r=require('express').Router(); const c=require('../../controllers/storeController'); r.post('/validate',c.validatePromo); module.exports=r;

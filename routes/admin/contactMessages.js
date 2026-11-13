@@ -1,0 +1,1 @@
+const r=require('express').Router(); const admin=require('../../middleware/adminMiddleware'); const c=require('../../controllers/storeController'); r.get('/',admin,c.contactMessages); r.post('/:id/status',admin,c.updateContactMessage); r.post('/:id/delete',admin,c.deleteContactMessage); module.exports=r;

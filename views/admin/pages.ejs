@@ -1,0 +1,132 @@
+<!-- <section class="mb-7"><p class="mb-2 text-xs font-bold uppercase tracking-[.18em] text-emerald-700">Website content</p><h1 class="text-3xl font-extrabold tracking-tight brand-heading text-slate-900">Pages</h1><p class="mt-2 text-sm text-slate-500">Manage the content that appears across your website.</p></section>
+<div class="grid gap-4 md:grid-cols-2"><% pages.forEach(p => { %><article class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/70 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-900/5"><div class="flex items-start gap-4"><div class="flex items-center justify-center w-12 h-12 shrink-0 rounded-2xl bg-emerald-50 text-emerald-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div><div class="flex-1 min-w-0"><h2 class="font-bold text-slate-900"><%= p.title %></h2><p class="mt-1 text-xs break-all text-slate-500">/api/pages/<%= p.slug %></p><div class="mt-4"><a href="/admin/pages/<%= p.slug %>/edit" class="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100">Edit content <span>→</span></a></div></div></div></article><% }) %></div>
+<% if (!pages.length) { %><div class="p-12 text-center bg-white rounded-2xl ring-1 ring-slate-200/70"><p class="font-bold text-slate-800">No pages available</p><p class="mt-1 text-sm text-slate-500">Pages will appear here when configured.</p></div><% } %> -->
+
+
+
+<!-- Page Header -->
+<section class="mb-8">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        Website content
+      </div>
+
+      <h1 class="text-3xl font-extrabold tracking-tight brand-heading text-slate-900">
+        Pages
+      </h1>
+
+      <p class="mt-2 text-sm text-slate-500">
+        Manage and update the content displayed across your website.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3 px-4 py-3 bg-white border shadow-sm rounded-xl border-slate-200">
+      <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M7 3h7l5 5v13H7a2 2 0 01-2-2V5a2 2 0 012-2zM14 3v5h5M9 13h6m-6 4h6"/>
+        </svg>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-slate-500">Total pages</p>
+        <p class="text-xl font-extrabold text-slate-900"><%= pages.length %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Page Information -->
+<div class="p-5 border mb-7 rounded-2xl border-emerald-100 bg-gradient-to-r from-emerald-50 to-white sm:p-6">
+  <div class="flex items-start gap-4">
+    <div class="flex items-center justify-center bg-white shadow-sm h-11 w-11 shrink-0 rounded-xl text-emerald-700">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M12 16v-4m0-4h.01M22 12a10 10 0 11-20 0 10 10 0 0120 0z"/>
+      </svg>
+    </div>
+    <div>
+      <h3 class="font-bold text-slate-900">Manage your website pages</h3>
+      <p class="max-w-2xl mt-1 text-sm leading-6 text-slate-600">
+        Edit page titles and content from one place. Changes are saved to your website pages through the existing admin system.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Pages Grid -->
+<% if (pages.length) { %>
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h2 class="text-lg font-extrabold text-slate-900">All website pages</h2>
+      <p class="mt-1 text-xs text-slate-500">Select a page to manage its content.</p>
+    </div>
+    <span class="px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-600">
+      <%= pages.length %> Pages
+    </span>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    <% pages.forEach(p => { %>
+      <article class="relative p-5 overflow-hidden transition duration-300 bg-white border shadow-sm group rounded-2xl border-slate-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-900/5">
+
+        <div class="absolute top-0 right-0 w-24 h-24 transition rounded-bl-full bg-emerald-50/70 group-hover:bg-emerald-100/70"></div>
+
+        <div class="relative">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center justify-center w-12 h-12 transition rounded-2xl bg-emerald-50 text-emerald-700 group-hover:bg-emerald-100">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+              </svg>
+            </div>
+
+            <span class="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+              Website page
+            </span>
+          </div>
+
+          <h2 class="mt-5 text-lg font-extrabold transition text-slate-900 group-hover:text-emerald-800">
+            <%= p.title %>
+          </h2>
+
+          <div class="flex items-center gap-2 mt-2 text-xs text-slate-400">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M10 13a5 5 0 007.07 0l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.07 0l-3 3a5 5 0 007.07 7.07l1.72-1.71"/>
+            </svg>
+            <span class="truncate">/api/pages/<%= p.slug %></span>
+          </div>
+
+          <div class="pt-4 mt-6 border-t border-slate-100">
+            <a
+              href="/admin/pages/<%= p.slug %>/edit"
+              class="flex w-full items-center justify-between rounded-xl bg-[#174a34] px-4 py-3 text-sm font-bold text-white transition hover:bg-emerald-800 active:scale-[0.98]"
+            >
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/>
+                </svg>
+                Edit page content
+              </span>
+              <span class="text-lg">→</span>
+            </a>
+          </div>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="px-6 py-20 text-center bg-white border shadow-sm rounded-2xl border-slate-200">
+    <div class="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl bg-slate-100 text-slate-400">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M7 3h7l5 5v13H7a2 2 0 01-2-2V5a2 2 0 012-2zM14 3v5h5"/>
+      </svg>
+    </div>
+    <h3 class="mt-4 text-lg font-bold text-slate-800">No pages available</h3>
+    <p class="mt-1 text-sm text-slate-500">Pages will appear here when configured.</p>
+  </div>
+<% } %>

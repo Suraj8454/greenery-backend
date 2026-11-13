@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#123b2b" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="Cityscape Greenery store administration and content management." />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <title><%= String(page || "Dashboard").replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) %> · Cityscape Admin</title>
+  <link rel="stylesheet" href="/css/tailwind.css" />
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body class="min-h-screen bg-[#f5f7f5] text-slate-800">
+  <div id="mobileScrim" class="mobile-scrim fixed inset-0 z-30 bg-slate-950/50 backdrop-blur-sm" aria-hidden="true"></div>
+  <aside id="adminSidebar" class="admin-sidebar fixed inset-y-0 left-0 z-40 flex w-[272px] flex-col bg-[#102f22] text-white shadow-2xl shadow-emerald-950/10 md:translate-x-0">
+    <div class="flex items-center gap-3 border-b border-white/10 px-6 py-6">
+      <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-800 shadow-lg shadow-black/20"><svg class="h-6 w-6 text-emerald-100" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8 6 4 10 4 16c0 4 4 6 8 6s8-2 8-6c0-6-4-10-8-14z"/></svg></div>
+      <div class="min-w-0"><h1 class="brand-heading text-lg font-extrabold tracking-tight">Cityscape</h1><p class="mt-0.5 text-[10px] font-bold uppercase tracking-[.24em] text-emerald-300">Admin console</p></div>
+      <button id="closeSidebar" class="ml-auto rounded-lg p-2 text-white/70 hover:bg-white/10 md:hidden" aria-label="Close menu"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="px-5 pb-2 pt-6"><p class="px-3 text-[10px] font-bold uppercase tracking-[.2em] text-emerald-200/50">Workspace</p></div>
+    <nav class="flex-1 space-y-1 overflow-y-auto px-4 py-2">
+      <% const groups = [
+        { label: 'Overview', links: [
+          {path:'/admin',label:'Dashboard',id:'dashboard',icon:'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1-1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'}
+        ]},
+        { label: 'Store', links: [
+          {path:'/admin/products',label:'Products',id:'products',icon:'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'},
+          {path:'/admin/categories',label:'Categories',id:'categories',icon:'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z'},
+          {path:'/admin/subcategories',label:'Subcategories',id:'subcategories',icon:'M4 5h6v6H4z M14 5h6v6h-6z M7 14v5m10-5v5M7 16h10'},
+          {path:'/admin/inventory',label:'Inventory',id:'inventory',icon:'M3 7h18M5 7l1 13h12l1-13M9 7V4h6v3'},
+          {path:'/admin/orders',label:'Orders & invoices',id:'orders',icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'},
+          {path:'/admin/users',label:'Customers',id:'users',icon:'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'},
+          {path:'/admin/promo-codes',label:'Promo codes',id:'promos',icon:'M20 12l-8 8-9-9V3h8z M7 7h.01'},
+          {path:'/admin/testimonials',label:'Testimonials',id:'testimonials',icon:'M7 8h10M7 12h7m-9 8 2-4H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-7z'}
+        ]},
+        { label: 'Homepage', links: [
+          {path:'/admin/sections?tab=featured_in',label:'Featured In',id:'sections',key:'featured_in'},
+          {path:'/admin/sections?tab=trust_badges',label:'Trust Badges',id:'sections',key:'trust_badges'},
+          {path:'/admin/sections?tab=how_it_works',label:'How It Works',id:'sections',key:'how_it_works'},
+          {path:'/admin/sections?tab=why_choose_us',label:'Why Choose Us',id:'sections',key:'why_choose_us'},
+          {path:'/admin/sections?tab=plant_story',label:'Plant Story',id:'sections',key:'plant_story'},
+          {path:'/admin/sections?tab=bulk_order',label:'Bulk Orders',id:'sections',key:'bulk_order'},
+          {path:'/admin/sections?tab=headings',label:'Headings & subheadings',id:'sections',key:'headings'}
+        ]},
+        { label: 'Content & marketing', links: [
+          {path:'/admin/slides',label:'Hero slider',id:'slides',icon:'M4 5h16v14H4z M4 9h16 M9 19V9'},
+          {path:'/admin/blog',label:'Blogs & SEO',id:'blog',icon:'M4 5h16M4 10h16M4 15h10M4 20h10'},
+          {path:'/admin/pages',label:'Content pages',id:'pages',icon:'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'},
+          {path:'/admin/contact-messages',label:'Contact enquiries',id:'messages',icon:'M3 5h18v14H3z M3 6l9 7 9-7'},
+          {path:'/admin/newsletter',label:'Newsletter',id:'newsletter',icon:'M4 4h16v16H4z M4 8h16'},
+          {path:'/admin/settings',label:'Store settings',id:'settings',icon:'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543-.826 2.37.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'}
+        ]}
+      ]; %>
+      <% groups.forEach(group => { %>
+        <p class="px-3 pb-1 pt-4 text-[9px] font-extrabold uppercase tracking-[.2em] text-emerald-200/45"><%= group.label %></p>
+        <% group.links.forEach(l => { %>
+          <a href="<%= l.path %>" class="sidebar-link group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[12px] font-semibold <%= page === l.id && (!l.key || (typeof activeTab !== 'undefined' && activeTab === l.key) || ((typeof activeTab === 'undefined' || !activeTab) && l.key === 'featured_in')) ? 'active' : 'text-slate-300 hover:bg-white/[.06] hover:text-white' %>">
+            <svg class="icon h-[17px] w-[17px] shrink-0 text-slate-400 group-hover:text-emerald-200" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="<%= l.icon || 'M5 5h14v14H5z M8 9h8 M8 13h8' %>"/></svg><span><%= l.label %></span><% if (page === l.id && (!l.key || (typeof activeTab !== 'undefined' && activeTab === l.key))) { %><span class="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-200"></span><% } %>
+          </a>
+        <% }) %>
+      <% }) %>
+    </nav>
+    <div class="mx-4 mb-4 rounded-2xl border border-white/10 bg-white/[.04] p-4"><div class="flex items-center gap-3"><div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-400/15 text-sm font-bold text-emerald-200">A</div><div class="min-w-0"><p class="text-sm font-semibold">Administrator</p><p class="mt-0.5 text-[11px] text-slate-400">Store management</p></div></div></div>
+    <div class="border-t border-white/10 p-4"><a href="/admin/logout" class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-rose-200 hover:bg-rose-500/10"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Sign out</a></div>
+  </aside>
+  <button id="openSidebar" class="mobile-menu-button fixed left-4 top-4 z-20 hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-lg" aria-label="Open navigation"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>Menu</button>
+  <main class="admin-main ml-[272px] min-h-screen p-6 lg:p-9">
+    <div class="mx-auto mb-8 flex max-w-[1440px] items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+      <div><p class="text-xs font-bold uppercase tracking-[.18em] text-emerald-700">Cityscape / Admin</p><p class="mt-1 text-sm text-slate-500">Manage your store with confidence.</p></div>
+      <div class="hidden items-center gap-3 sm:flex"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-800">A</span><div><p class="text-sm font-semibold text-slate-800">Administrator</p><p class="text-xs text-slate-500">Control panel</p></div></div>
+    </div>
+    <div class="mx-auto max-w-[1440px]"><%- body %></div>
+  </main>
+  <script>
+    (() => {
+      const sidebar = document.getElementById('adminSidebar');
+      const scrim = document.getElementById('mobileScrim');
+      const open = document.getElementById('openSidebar');
+      const close = document.getElementById('closeSidebar');
+      const toggle = (visible) => { sidebar.classList.toggle('is-open', visible); scrim.classList.toggle('is-open', visible); };
+      open?.addEventListener('click', () => toggle(true));
+      close?.addEventListener('click', () => toggle(false));
+      scrim?.addEventListener('click', () => toggle(false));
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') toggle(false); });
+    })();
+
+    // Add consistent, accessible client-side search to admin data tables.
+    document.querySelectorAll('.admin-main table').forEach((table, index) => {
+      if (table.dataset.search === 'off') return;
+      const tbody = table.tBodies && table.tBodies[0];
+      if (!tbody || !tbody.rows.length) return;
+      const card = table.closest('.overflow-hidden') || table.parentElement;
+      if (!card || card.querySelector('.admin-list-toolbar')) return;
+
+      const toolbar = document.createElement('div');
+      toolbar.className = 'admin-list-toolbar';
+      const search = document.createElement('input');
+      search.type = 'search';
+      search.className = 'admin-list-search';
+      search.placeholder = 'Search this list…';
+      search.setAttribute('aria-label', 'Search table rows');
+      search.autocomplete = 'off';
+      search.id = `admin-list-search-${index}`;
+      const count = document.createElement('span');
+      count.className = 'admin-list-count';
+      count.setAttribute('aria-live', 'polite');
+      toolbar.append(search, count);
+
+      const tableWrap = table.closest('.overflow-x-auto, .table-wrap') || table;
+      card.insertBefore(toolbar, tableWrap);
+
+      const rows = Array.from(tbody.rows);
+      const update = () => {
+        const query = search.value.trim().toLocaleLowerCase();
+        let visible = 0;
+        rows.forEach(row => {
+          const match = !query || row.innerText.toLocaleLowerCase().includes(query);
+          row.hidden = !match;
+          if (match) visible += 1;
+        });
+        count.textContent = query
+          ? `${visible} matching row${visible === 1 ? '' : 's'}`
+          : `${rows.length} row${rows.length === 1 ? '' : 's'}`;
+      };
+      search.addEventListener('input', update);
+      update();
+    });
+
+    // Prevent double submits on destructive or save actions.
+    document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('button[type="submit"], button:not([type])');
+        if (button && !button.disabled) {
+          button.dataset.originalText = button.textContent.trim();
+          button.disabled = true;
+          button.textContent = 'Processing…';
+          window.setTimeout(() => {
+            button.disabled = false;
+            if (button.dataset.originalText) button.textContent = button.dataset.originalText;
+          }, 8000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
