@@ -31,13 +31,108 @@ exports.contact = async (req, res) => {
     res.status(201).json({ success: true, message: 'Message received' });
   } catch (e) { res.status(500).json({ error: 'Unable to save message' }); }
 };
+// exports.saveSettings = async (req, res) => {
+//   try {
+//     const allowed = ['brand_name','whatsapp_number','logo_url','mobile_number','contact_email','address','hero_tagline','hero_title','hero_description','hero_image_url','announcement_text','footer_heading','footer_description','footer_cta_text','footer_image_url','brand_tagline','search_placeholder','footer_quick_title','footer_help_title','navigation_json','footer_quick_links_json','footer_help_links_json','footer_newsletter_title','instagram_url','facebook_url','twitter_url','youtube_url','pinterest_url','free_shipping_threshold','shipping_fee'];
+//     for (const key of allowed) if (req.body[key] !== undefined) { const value=String(req.body[key]); if (key.endsWith('_json')) { try { const parsed=JSON.parse(value); if (!Array.isArray(parsed)) return res.status(400).send(`${key} must be a JSON array.`); } catch { return res.status(400).send(`${key} contains invalid JSON.`); } } await db.query('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)', [key, value]); }
+//     res.redirect('/admin/settings?saved=1');
+//   } catch (e) { res.status(500).send('Unable to save settings'); }
+// };
+
+
 exports.saveSettings = async (req, res) => {
   try {
-    const allowed = ['brand_name','whatsapp_number','mobile_number','contact_email','address','hero_tagline','hero_title','hero_description','hero_image_url','announcement_text','footer_heading','footer_description','footer_cta_text','footer_image_url','brand_tagline','search_placeholder','footer_quick_title','footer_help_title','navigation_json','footer_quick_links_json','footer_help_links_json','footer_newsletter_title','instagram_url','facebook_url','twitter_url','youtube_url','pinterest_url','free_shipping_threshold','shipping_fee'];
-    for (const key of allowed) if (req.body[key] !== undefined) { const value=String(req.body[key]); if (key.endsWith('_json')) { try { const parsed=JSON.parse(value); if (!Array.isArray(parsed)) return res.status(400).send(`${key} must be a JSON array.`); } catch { return res.status(400).send(`${key} contains invalid JSON.`); } } await db.query('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)', [key, value]); }
-    res.redirect('/admin/settings?saved=1');
-  } catch (e) { res.status(500).send('Unable to save settings'); }
+    const allowed = [
+      'brand_name',
+      'whatsapp_number',
+      'mobile_number',
+      'contact_email',
+      'address',
+      'hero_tagline',
+      'hero_title',
+      'hero_description',
+      'hero_image_url',
+      'announcement_text',
+      'footer_heading',
+      'footer_description',
+      'footer_cta_text',
+      'footer_image_url',
+      'brand_tagline',
+      'search_placeholder',
+      'footer_quick_title',
+      'footer_help_title',
+      'navigation_json',
+      'footer_quick_links_json',
+      'footer_help_links_json',
+      'footer_newsletter_title',
+      'instagram_url',
+      'facebook_url',
+      'twitter_url',
+      'youtube_url',
+      'pinterest_url',
+      'free_shipping_threshold',
+      'shipping_fee'
+    ];
+
+    // Save normal website settings
+    for (const key of allowed) {
+      if (req.body[key] === undefined) continue;
+
+      const value = String(req.body[key]);
+
+      if (key.endsWith('_json')) {
+        try {
+          const parsed = JSON.parse(value);
+
+          if (!Array.isArray(parsed)) {
+            return res.status(400).send(
+              `${key} must be a JSON array.`
+            );
+          }
+        } catch {
+          return res.status(400).send(
+            `${key} contains invalid JSON.`
+          );
+        }
+      }
+
+      await db.query(
+        `INSERT INTO site_settings
+        (setting_key, setting_value)
+        VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE
+        setting_value = VALUES(setting_value)`,
+        [key, value]
+      );
+    }
+
+    // Save uploaded website logo
+    if (req.file) {
+      const logoPath = `/uploads/website/${req.file.filename}`;
+
+      await db.query(
+        `INSERT INTO site_settings
+        (setting_key, setting_value)
+        VALUES ('logo_url', ?)
+        ON DUPLICATE KEY UPDATE
+        setting_value = VALUES(setting_value)`,
+        [logoPath]
+      );
+    }
+
+    return res.redirect('/admin/settings?saved=1');
+
+  } catch (error) {
+    console.error('Website settings save error:', error);
+
+    return res.status(500).send(
+      'Unable to save website settings.'
+    );
+  }
 };
+
+
+
 exports.adminTestimonials = async (_req, res) => { const [rows] = await db.query('SELECT * FROM testimonials ORDER BY created_at DESC'); return renderAdmin(res, 'testimonials', 'testimonials', { testimonials: rows }); };
 exports.createTestimonial = async (req, res) => { const { name, location, product, review, rating, image } = req.body; const imagePath=req.file?`/uploads/products/${req.file.filename}`:(image||''); await db.query('INSERT INTO testimonials (name, location, product, review, rating, image) VALUES (?, ?, ?, ?, ?, ?)', [name, location || '', product || '', review, Math.min(5, Math.max(1, Number(rating || 5))), imagePath]); res.redirect('/admin/testimonials'); };
 exports.deleteTestimonial = async (req, res) => { await db.query('DELETE FROM testimonials WHERE id=?', [req.params.id]); res.redirect('/admin/testimonials'); };

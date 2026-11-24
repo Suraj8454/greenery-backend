@@ -188,6 +188,146 @@ async function setupDatabase() {
     title VARCHAR(255), content LONGTEXT
   )`);
 
+
+
+
+  // ==========================================
+  // DEFAULT POLICY PAGES
+  // ==========================================
+
+  const defaultPolicyPages = [
+    {
+      slug: 'return-refund',
+      title: 'Return & Refund Policy',
+      content: `
+        <div class="policy-content">
+
+          <h2>Return & Refund Policy</h2>
+
+          <p>
+            At Cityscape Greenery, customer satisfaction is important to us.
+            Please read our return and refund policy before placing an order.
+          </p>
+
+          <h3>1. Return Eligibility</h3>
+          <p>
+            Customers can request a return within [X days] of receiving
+            their order, subject to product eligibility and condition.
+          </p>
+
+          <h3>2. Damaged or Incorrect Products</h3>
+          <p>
+            If you receive a damaged, defective or incorrect product,
+            contact our customer support team with your order details
+            and clear photographs.
+          </p>
+
+          <h3>3. Refund Process</h3>
+          <p>
+            Refund requests will be reviewed by our team.
+            Approved refunds will be processed through the applicable
+            payment method within [X business days].
+          </p>
+
+          <h3>4. Non-Returnable Products</h3>
+          <p>
+            Products that do not meet our return eligibility conditions
+            may not qualify for a return or refund.
+          </p>
+
+          <h3>5. Cancellation</h3>
+          <p>
+            Order cancellation requests are subject to the order
+            processing and dispatch status.
+          </p>
+
+          <h3>6. Contact Us</h3>
+          <p>
+            For return and refund assistance, please contact our
+            customer support team.
+          </p>
+
+        </div>
+      `
+    },
+
+    {
+      slug: 'delivery-shipping',
+      title: 'Delivery & Shipping Policy',
+      content: `
+        <div class="policy-content">
+
+          <h2>Delivery & Shipping Policy</h2>
+
+          <p>
+            Cityscape Greenery aims to deliver your orders safely
+            and efficiently.
+          </p>
+
+          <h3>1. Shipping Locations</h3>
+          <p>
+            We deliver to serviceable locations across India.
+          </p>
+
+          <h3>2. Order Processing</h3>
+          <p>
+            Orders are processed after successful order confirmation
+            and payment verification, where applicable.
+          </p>
+
+          <h3>3. Delivery Timeline</h3>
+          <p>
+            Estimated delivery time is [X-X business days],
+            depending on the delivery location and product availability.
+          </p>
+
+          <h3>4. Shipping Charges</h3>
+          <p>
+            Shipping charges are calculated according to the
+            applicable shipping settings displayed during checkout.
+          </p>
+
+          <h3>5. Delivery Delays</h3>
+          <p>
+            Delivery may be delayed due to weather conditions,
+            logistics issues or other unforeseen circumstances.
+          </p>
+
+          <h3>6. Damaged Delivery</h3>
+          <p>
+            If your order arrives damaged, contact our support team
+            with photographs and your order details.
+          </p>
+
+          <h3>7. Tracking Information</h3>
+          <p>
+            Tracking information will be shared when available
+            through the applicable delivery service.
+          </p>
+
+          <h3>8. Contact Us</h3>
+          <p>
+            For shipping-related questions, contact our customer
+            support team.
+          </p>
+
+        </div>
+      `
+    }
+  ];
+
+  // Insert policy pages only if they do not already exist.
+  // Existing pages and their edited content will remain unchanged.
+
+  for (const page of defaultPolicyPages) {
+    await db.query(
+      `INSERT IGNORE INTO pages (slug, title, content)
+       VALUES (?, ?, ?)`,
+      [page.slug, page.title, page.content]
+    );
+  }
+
+
   await db.query(`CREATE TABLE IF NOT EXISTS contact_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255), email VARCHAR(255), message TEXT,
@@ -265,7 +405,7 @@ async function setupDatabase() {
   )`);
   {
     const defaults = {
-      brand_name: 'Cityscape Greenery', whatsapp_number: '919876543210', mobile_number: '+91 98765 43210',
+      brand_name: 'Cityscape Greenery',  logo_url: '',whatsapp_number: '919876543210', mobile_number: '+91 98765 43210',
       hero_tagline: 'Bring Nature Home', hero_title: 'Greener Spaces', hero_description: 'Premium plants, stylish pots, eco-friendly cocopeat and everything you need for a greener, healthier lifestyle.', hero_image_url: '', announcement_text: 'Free shipping on orders above ₹1999', footer_heading: 'Growing a greener tomorrow.', footer_image_url: '', footer_description: 'Bringing nature closer to you with premium plants, stylish pots, and eco-friendly gardening solutions.', footer_cta_text: 'Get in Touch', brand_tagline: 'Conscious plant living', search_placeholder: 'Search products, pots, plants...', footer_quick_title: 'Quick Links', footer_help_title: 'Help', navigation_json: '[{\"name\":\"Home\",\"path\":\"/\"},{\"name\":\"About Us\",\"path\":\"/about\"},{\"name\":\"Blog\",\"path\":\"/blog\"},{\"name\":\"Contact\",\"path\":\"/contact\"}]', footer_quick_links_json: '[{\"name\":\"Home\",\"path\":\"/\"},{\"name\":\"About Us\",\"path\":\"/about\"},{\"name\":\"Contact Us\",\"path\":\"/contact\"},{\"name\":\"Bulk Order\",\"path\":\"/bulk\"},{\"name\":\"My Orders\",\"path\":\"/orders\"}]', footer_help_links_json: '[{\"name\":\"Privacy Policy\",\"path\":\"/privacy\"},{\"name\":\"Terms & Conditions\",\"path\":\"/terms\"},{\"name\":\"Favorites\",\"path\":\"/favorites\"},{\"name\":\"Cart\",\"path\":\"/cart\"}]', footer_newsletter_title: 'Newsletter',
       contact_email: 'hello@cityscapegreenery.com', address: '123 Green Park, New Delhi - 110001',
       instagram_url: '', facebook_url: '', twitter_url: '', free_shipping_threshold: '1999',
